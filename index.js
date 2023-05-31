@@ -1,16 +1,26 @@
-import express from 'express';
-import Connection from './database/db.js'
+const express = require("express");
 const app = express();
-const port = 8000;
-import dotenv from 'dotenv'
-import Router from './routes/route.js'
+const port = process.env.PORT || 5000;
+const Route = require("./Routes/Route");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
 
-dotenv.config()
+dotenv.config({path:'./.env'})
+const conn = require("./Database/conn");
 
-app.use('/',Router)
+const corsOptions = {
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+    credentials:true,
+};
 
-app.listen(port , ()=>{
-    console.log(`Server listening on port: ${port}`);
+app.use(cookieParser());
+app.use(express.json());
+app.use(cors(corsOptions));
+app.use(Route);
+app.use('/uploads' , express.static(__dirname + '/uploads'));
+
+app.listen(port, () => {
+  console.log("app listening on port " + port);
 });
-
-Connection();
