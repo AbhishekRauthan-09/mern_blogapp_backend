@@ -74,6 +74,7 @@ router.post("/login", async (req, res) => {
 router.get("/profileinfo", async (req, res) => {
   try {
     const { jwttoken } = req.cookies;
+    console.log(jwttoken);
     const verifyToken = await jwt.verify(jwttoken, process.env.SECRET_KEY);
     if (verifyToken) {
       res.json(verifyToken);
@@ -126,7 +127,7 @@ router.post("/post", uploadMiddleware.single("file"), async (req, res) => {
       res.json({
         success: true,
         msg: "Post created and Uploaded successfully",
-        files: req.file,
+        files: postDoc,
       });
     }
   } catch (error) {
