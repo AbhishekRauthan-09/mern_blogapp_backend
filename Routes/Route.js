@@ -74,7 +74,7 @@ router.post("/login", async (req, res) => {
 router.get("/profileinfo", async (req, res) => {
   try {
     const { jwttoken } = req.cookies;
-    console.log(jwttoken);
+    console.log("token is:",jwttoken);
     const verifyToken = await jwt.verify(jwttoken, process.env.SECRET_KEY);
     if (verifyToken) {
       res.json(verifyToken);
