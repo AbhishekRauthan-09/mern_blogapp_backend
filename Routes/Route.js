@@ -8,6 +8,11 @@ const fs = require("fs");
 const Post = require("../model/postSchema");
 const { request } = require("http");
 
+
+router.get('/',(req,res)=>{
+  res.send("hello working")
+})
+
 router.post("/signup", async (req, res) => {
   try {
     const { email, password, username, age } = req.body;
