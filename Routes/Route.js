@@ -74,7 +74,6 @@ router.post("/login", async (req, res) => {
 router.get("/profileinfo", async (req, res) => {
   try {
     const { jwttoken } = req.cookies;
-    console.log("token is:",jwttoken);
     const verifyToken = await jwt.verify(jwttoken, process.env.SECRET_KEY);
     if (verifyToken) {
       res.json(verifyToken);
@@ -104,6 +103,7 @@ router.post("/logout", async (req, res) => {
 
 router.post("/post", uploadMiddleware.single("file"), async (req, res) => {
   try {
+    console.log("Req file is :",req.file)
     const { originalname, path } = req.file;
     const parts = originalname.split(".");
     const ext = parts[parts.length - 1];
@@ -111,6 +111,7 @@ router.post("/post", uploadMiddleware.single("file"), async (req, res) => {
     console.log("old path: " + path + " new path: " + newPath);
     fs.renameSync(path, newPath);
 
+    console.log("in post")
     const { jwttoken } = req.cookies;
     const verifyToken = await jwt.verify(jwttoken, process.env.SECRET_KEY);
     if (verifyToken) {
