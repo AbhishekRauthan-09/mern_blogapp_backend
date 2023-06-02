@@ -10,7 +10,7 @@ dotenv.config({path:'./.env'})
 const conn = require("./Database/conn");
 
 const corsOptions = {
-    origin: [process.env.BASE_URL],
+    origin: [process.env.BASE_URL,true],
     methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
     credentials:true,
 };
