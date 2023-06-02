@@ -95,6 +95,7 @@ router.get("/profileinfo", async (req, res) => {
 
 router.post("/logout", async (req, res) => {
   try {
+    console.log(req.cookies)
     res.clearCookie("jwttoken").json({ success: true });
   } catch (error) {
     res.json({
