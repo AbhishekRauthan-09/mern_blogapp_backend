@@ -52,7 +52,7 @@ router.post("/login", async (req, res) => {
           process.env.SECRET_KEY
         );
         res
-          .cookie("jwttoken", token,{httpOnly:true})
+          .cookie("jwttoken", token,{httpOnly:false})
           .json({ id: findUser._id, email: findUser.email });
       } else {
         res.json({
