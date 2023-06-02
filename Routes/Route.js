@@ -53,7 +53,7 @@ router.post("/login", async (req, res) => {
         );
         res
           .cookie("jwttoken", token,{httpOnly:false})
-          .json({ id: findUser._id, email: findUser.email });
+          .json({ id: findUser._id, email: findUser.email ,jwt:token});
       } else {
         res.json({
           success: false,
