@@ -8,10 +8,9 @@ const fs = require("fs");
 const Post = require("../model/postSchema");
 const { request } = require("http");
 
-
-router.get('/',(req,res)=>{
-  res.send("hello working")
-})
+router.get("/", (req, res) => {
+  res.send("hello working");
+});
 
 router.post("/signup", async (req, res) => {
   try {
@@ -52,12 +51,17 @@ router.post("/login", async (req, res) => {
           process.env.SECRET_KEY
         );
         res
-          .cookie("jwttoken", token,{
-            httpOnly:true,
-            secure:true,
-            sameSite:'none',
+          .cookie("jwttoken", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
           })
-          .json({ id: findUser._id, email: findUser.email ,jwt:token , cookie: req.cookies});
+          .json({
+            id: findUser._id,
+            email: findUser.email,
+            jwt: token,
+            cookie: req.cookies,
+          });
       } else {
         res.json({
           success: false,
@@ -95,8 +99,12 @@ router.get("/profileinfo", async (req, res) => {
 
 router.post("/logout", async (req, res) => {
   try {
-    console.log(req.cookies)
-    await res.clearCookie("jwttoken")
+    console.log(req.cookies);
+    await res.clearCookie("jwttoken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
     res.json({ success: true });
   } catch (error) {
     res.json({
@@ -109,7 +117,7 @@ router.post("/logout", async (req, res) => {
 
 router.post("/post", uploadMiddleware.single("file"), async (req, res) => {
   try {
-    console.log("Req file is :",req.file)
+    console.log("Req file is :", req.file);
     const { originalname, path } = req.file;
     const parts = originalname.split(".");
     const ext = parts[parts.length - 1];
@@ -117,7 +125,7 @@ router.post("/post", uploadMiddleware.single("file"), async (req, res) => {
     console.log("old path: " + path + " new path: " + newPath);
     fs.renameSync(path, newPath);
 
-    console.log("in post jwt is:",req.cookies)
+    console.log("in post jwt is:", req.cookies);
     const { jwttoken } = req.cookies;
     const verifyToken = await jwt.verify(jwttoken, process.env.SECRET_KEY);
     if (verifyToken) {
@@ -158,14 +166,14 @@ router.put("/post", uploadMiddleware.single("file"), async (req, res) => {
       res.json(req.body);
     }
 
-    const { id, title, summary, content , category} = req.body;
+    const { id, title, summary, content, category } = req.body;
     const postDoc = await Post.findById(id);
     const data = await postDoc.updateOne({
       title,
       summary,
       content,
       cover: newPath ? newPath : postDoc.cover,
-      category:category?category:postDoc.category,
+      category: category ? category : postDoc.category,
     });
 
     res.json({ success: true, data: data, msg: "Post updated successfully" });
@@ -182,14 +190,17 @@ router.post("/deletepost", async (req, res) => {
   try {
     const _id = req.body.id;
     const response = await Post.findOneAndDelete({ _id });
-      const filename =response.cover;
-      console.log(filename)
-      fs.unlink(`./${filename}`,(err)=>{
-        if(err) throw err;
-        console.log("file deleted");
-      })
-      res.json({success:true,msg:"Post deleted successfully",file:response})
-    
+    const filename = response.cover;
+    console.log(filename);
+    fs.unlink(`./${filename}`, (err) => {
+      if (err) throw err;
+      console.log("file deleted");
+    });
+    res.json({
+      success: true,
+      msg: "Post deleted successfully",
+      file: response,
+    });
   } catch (error) {
     res.json({
       success: false,
@@ -214,10 +225,11 @@ router.get("/getallposts", async (req, res) => {
 
 router.get("/myblogs", async (req, res) => {
   try {
-    
     const { jwttoken } = req.cookies;
     const verifyToken = await jwt.verify(jwttoken, process.env.SECRET_KEY);
-    const data = await Post.find({author:verifyToken.username}).sort({ createdAt: -1 });
+    const data = await Post.find({ author: verifyToken.username }).sort({
+      createdAt: -1,
+    });
     res.json(data);
   } catch (error) {
     res.json({
