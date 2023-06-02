@@ -13,8 +13,6 @@ router.get('/',(req,res)=>{
   res.send("hello working")
 })
 
-axios.defaults.withCredentials = true
-
 router.post("/signup", async (req, res) => {
   try {
     const { email, password, username, age } = req.body;
