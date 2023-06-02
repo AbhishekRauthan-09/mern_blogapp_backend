@@ -111,7 +111,7 @@ router.post("/post", uploadMiddleware.single("file"), async (req, res) => {
     console.log("old path: " + path + " new path: " + newPath);
     fs.renameSync(path, newPath);
 
-    console.log("in post")
+    console.log("in post jwt is:",req.cookies)
     const { jwttoken } = req.cookies;
     const verifyToken = await jwt.verify(jwttoken, process.env.SECRET_KEY);
     if (verifyToken) {
