@@ -13,6 +13,8 @@ router.get('/',(req,res)=>{
   res.send("hello working")
 })
 
+axios.defaults.withCredentials = true
+
 router.post("/signup", async (req, res) => {
   try {
     const { email, password, username, age } = req.body;
@@ -55,7 +57,7 @@ router.post("/login", async (req, res) => {
           .cookie("jwttoken", token,{
             httpOnly:false
           })
-          .json({ id: findUser._id, email: findUser.email ,jwt:token});
+          .json({ id: findUser._id, email: findUser.email ,jwt:token , cookie: req.cookies});
       } else {
         res.json({
           success: false,
