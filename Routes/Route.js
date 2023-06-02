@@ -52,7 +52,6 @@ router.post("/login", async (req, res) => {
         );
         res
           .cookie("jwttoken", token, {
-            httpOnly: true,
             secure: false,
             sameSite: "none",
           })
