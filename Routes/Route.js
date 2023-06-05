@@ -58,7 +58,7 @@ router.post("/login", async (req, res) => {
           .json({
             id: findUser._id,
             email: findUser.email,
-            cookie: req.cookies,
+            jwttoken:token,
           });
       } else {
         res.json({
@@ -123,7 +123,8 @@ router.post("/post", uploadMiddleware.single("file"), async (req, res) => {
     console.log("old path: " + path + " new path: " + newPath);
     fs.renameSync(path, newPath);
 
-    const { jwttoken } = req.cookies;
+    const { jwttoken } = req.body;
+    console.log(jwttoken)
     const verifyToken = await jwt.verify(jwttoken, process.env.SECRET_KEY);
     if (verifyToken) {
       const { title, summary, content, category } = req.body;
@@ -220,9 +221,10 @@ router.get("/getallposts", async (req, res) => {
   }
 });
 
-router.get("/myblogs", async (req, res) => {
+router.get("/myblogs/:jwttoken", async (req, res) => {
   try {
-    const { jwttoken } = req.cookies;
+    const { jwttoken } = req.params;
+    console.log(jwttoken)
     const verifyToken = await jwt.verify(jwttoken, process.env.SECRET_KEY);
     const data = await Post.find({ author: verifyToken.username }).sort({
       createdAt: -1,
